@@ -46,7 +46,6 @@ def format_viewer(event):
 def gen_msg(text, subtext):
     msg = {
         "text": text,
-        "icon-emoji": ":plex:",
         "attachments": [
             {
                 "text": subtext
