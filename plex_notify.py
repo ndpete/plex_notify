@@ -28,7 +28,7 @@ def process_event(event):
         msg = gen_msg(format_viewer(event), "Started: {}".format(format_title(event['Metadata'])))
         send_slack(msg)
     elif event['event'] == 'media.scrobble':
-        msg = gen_msg(format_viewer(event), "Finished: {}".format(event['Metadata']))
+        msg = gen_msg(format_viewer(event), "Finished: {}".format(format_title(event['Metadata']))
         send_slack(msg)
 
 
