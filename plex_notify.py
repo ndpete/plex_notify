@@ -33,7 +33,7 @@ def process_event(event):
 
 
 def format_title(meta):
-    if meta['grandparentTitle']:
+    if 'grandparentTitle' in meta:
         return "{} S{}E{}: {}".format(meta['grandparentTitle'], meta['parentIndex'], meta['index'], meta['title'])
     else:
         return meta['title']
@@ -46,6 +46,7 @@ def format_viewer(event):
 def gen_msg(text, subtext):
     msg = {
         "text": text,
+        "icon-emoji": ":plex:",
         "attachments": [
             {
                 "text": subtext
