@@ -1,0 +1,14 @@
+[Unit]
+Description=Plex Notify
+After=network.target
+
+[Service]
+User=[USER]
+Restart=always
+RestartSec=5
+Type=simple
+ExecStart=[PATH TO PYTHON] [PATH TO/listener.py]
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target
