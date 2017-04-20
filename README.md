@@ -27,11 +27,34 @@ Events Currently Supported:
 }
 ```
 
+## Setup to start and stop at boot via systemd
+1. Edit `plex-notify.service` Change [USER] to the user to run the app, [PATH TO PYTHON] and [PATH TO/listener.py] see example below
+2. Copy `plex-notify.service` to systemd folder: `cp plex-notify /etc/systemd/system`
+3. Enable and start service: `systemctl enable plex-notify.service && systemctl start plex-notify.service`
+
+Example systemd config file:
+```
+[Unit]
+Description=Plex Notify
+After=network.target
+
+[Service]
+User=someuser
+Restart=always
+RestartSec=5
+Type=simple
+ExecStart=/usr/bin/python3 /opt/plex-notify/listener.py
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target
+```
+
+
 ## TODOs
 - Add more events
 - Listener: Handle image attachments for the webhooks that have them
 - Make a listener that isn't using the dev webserver
-- write instructions on how to run/stop at startup/shutdown systemd
 - Pretty the notifications (ie add image, etc)
 - Make python2.7 backwards compatible (future use with aws lambda)
 - Fix all the things =)
