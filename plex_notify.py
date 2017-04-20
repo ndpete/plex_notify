@@ -25,7 +25,7 @@ def send_slack(msg):
 
 def process_event(event):
     if event['event'] == 'media.play':
-        msg = gen_msg(format_viewer(event), "Started: {}".format(format_title(event['Metadata'])))
+        msg = gen_msg(format_msg(event), format_viewer(event))
         send_slack(msg)
     elif event['event'] == 'media.scrobble':
         msg = gen_msg(format_viewer(event), "Finished: {}".format(format_title(event['Metadata'])))
@@ -41,6 +41,10 @@ def format_title(meta):
 
 def format_viewer(event):
     return "{account} on {device} @ {ip}".format(account=event['Account']['title'], device=event['Player']['title'], ip=event['Player']['publicAddress'])
+
+
+def format_msg(event):
+    return "{account} Started: {title}".format(account=event['Account']['title'], title=format_title(event['Metadata']))
 
 
 def gen_msg(text, subtext):
