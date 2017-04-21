@@ -11,25 +11,20 @@ if os.environ.get('SLACK_URL'):
 else:
     config_file = '{}/.plex_notify_config.json'.format(os.path.expanduser('~'))
     if not os.path.isfile(config_file):
-        raise Exception("No config file found in Environment Variables or at {}".format(config_file))
+        raise Exception(
+            "No config file found in Environment Variables or at {}".format(config_file))
     config = json.load(open(config_file))
     SLACK_URL = config['slack_url']
 
 
 def send_slack(msg):
-    print(json.dumps(msg))
-    r = requests.post(SLACK_URL, data=json.dumps(msg))
-    print(r.status_code)
-    print(r.headers)
+    return requests.post(SLACK_URL, data=json.dumps(msg))
 
 
 def process_event(event):
-    if event['event'] == 'media.play':
-        msg = gen_msg(format_msg(event), format_viewer(event))
-        send_slack(msg)
-    elif event['event'] == 'media.scrobble':
-        msg = gen_msg(format_viewer(event), "Finished: {}".format(format_title(event['Metadata'])))
-        send_slack(msg)
+    msg = gen_msg(format_msg(event), format_viewer(event))
+    response = send_slack(msg)
+    print(response.status_code)
 
 
 def format_title(meta):
@@ -44,7 +39,13 @@ def format_viewer(event):
 
 
 def format_msg(event):
-    return "{account} Started: {title}".format(account=event['Account']['title'], title=format_title(event['Metadata']))
+    event_type = {
+        'media.play': 'Started',
+        'media.scrobble': 'Finished',
+        'media.stop': 'Stopped',
+        'media.rate': 'Rated',
+    }
+    return "{account} {type}: {title}".format(account=event['Account']['title'], type=event_type[event['event']], title=format_title(event['Metadata']))
 
 
 def gen_msg(text, subtext):
@@ -60,7 +61,8 @@ def gen_msg(text, subtext):
 
 
 def main():
-    sample = json.load(open('/Users/ndpete/dev/plexWebhook-integration/sample_tv_hook.json'))
+    sample = json.load(
+        open('/Users/ndpete/dev/plexWebhook-integration/sample_tv_hook.json'))
     print(format_viewer(sample))
     print(format_title(sample['Metadata']))
     process_event(sample)
