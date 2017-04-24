@@ -42,7 +42,6 @@ def format_msg(event):
     event_type = {
         'media.play': 'Started',
         'media.scrobble': 'Finished',
-        'media.stop': 'Stopped',
         'media.rate': 'Rated',
     }
     return "{account} {type}: {title}".format(account=event['Account']['title'], type=event_type[event['event']], title=format_title(event['Metadata']))
